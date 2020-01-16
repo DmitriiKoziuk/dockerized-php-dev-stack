@@ -14,7 +14,12 @@ services:
             - php73dev
             - php73prod
     php73dev:
-        build: ./images/php73dev
+        build:
+          context: ./images/php73dev
+          args:
+            username: php
+            userid: 1000
+            usergroupid: 1000
         links:
             - mysql8
         volumes:
@@ -22,7 +27,12 @@ services:
             - /usr/local/etc/php/conf.d
             - ./php/php73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     php73prod:
-        build: ./images/php73prod
+        build:
+          context: ./images/php73prod
+          args:
+            username: php
+            userid: 1000
+            usergroupid: 1000
         links:
             - mysql8
         volumes:
