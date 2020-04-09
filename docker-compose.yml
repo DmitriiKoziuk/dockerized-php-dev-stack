@@ -13,6 +13,8 @@ services:
         links:
             - php73dev
             - php73prod
+            - php74dev
+            - php74prod
     php73dev:
         build:
           context: ./images/php73dev
@@ -27,6 +29,20 @@ services:
             - /usr/local/etc/php/conf.d
             - ./php/php73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
+    php74dev:
+        build:
+          context: ./images/php74dev
+          args:
+            username: php
+            userid: 1000
+            usergroupid: 1000
+        links:
+            - mysql8
+        volumes:
+            - ./www:/var/www
+            - /usr/local/etc/php/conf.d
+            - ./php/php74dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./shared/tmp/xhprof:/tmp/xhprof
     php73prod:
         build:
           context: ./images/php73prod
@@ -40,6 +56,20 @@ services:
             - ./www:/var/www
             - /usr/local/etc/php/conf.d
             - ./php/php73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./shared/tmp/xhprof:/tmp/xhprof
+    php74prod:
+        build:
+          context: ./images/php74prod
+          args:
+            username: php
+            userid: 1000
+            usergroupid: 1000
+        links:
+            - mysql8
+        volumes:
+            - ./www:/var/www
+            - /usr/local/etc/php/conf.d
+            - ./php/php74prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     mysql8:
         image: mysql:8
