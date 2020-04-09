@@ -1,6 +1,6 @@
-FROM dmitriikoziuk/php-7.3.13-fpm:1.1.0
+FROM dmitriikoziuk/php-7.3.15-fpm:latest
 
-MAINTAINER Dmitrii Kozyuk <dmitrii.kozyuk@gmail.com>
+MAINTAINER Dmitrii Kozyuk <dmitriikoziuk@gmail.com>
 
 ARG username
 ARG userid

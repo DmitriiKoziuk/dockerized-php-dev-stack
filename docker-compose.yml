@@ -26,6 +26,7 @@ services:
             - ./www:/var/www
             - /usr/local/etc/php/conf.d
             - ./php/php73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./shared/tmp/xhprof:/tmp/xhprof
     php73prod:
         build:
           context: ./images/php73prod
@@ -39,6 +40,7 @@ services:
             - ./www:/var/www
             - /usr/local/etc/php/conf.d
             - ./php/php73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./shared/tmp/xhprof:/tmp/xhprof
     mysql8:
         image: mysql:8
         ports:
