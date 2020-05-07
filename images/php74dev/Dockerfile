@@ -1,4 +1,4 @@
-FROM dmitriikoziuk/php-7.4.4-fpm-dev:latest
+FROM dmitriikoziuk/php-7.4.5-fpm-dev:latest
 
 MAINTAINER Dmitrii Kozyuk <dmitriikoziuk@gmail.com>
 
