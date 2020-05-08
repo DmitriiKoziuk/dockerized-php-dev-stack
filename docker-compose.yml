@@ -52,6 +52,7 @@ services:
             usergroupid: 1000
         links:
             - mysql8
+            - elasticsearch7
         volumes:
             - ./www:/var/www
             - /usr/local/etc/php/conf.d
@@ -66,6 +67,7 @@ services:
             usergroupid: 1000
         links:
             - mysql8
+            - elasticsearch7
         volumes:
             - ./www:/var/www
             - /usr/local/etc/php/conf.d
@@ -80,3 +82,22 @@ services:
             - /usr/local/bin
         environment:
             MYSQL_ROOT_PASSWORD: secret
+    elasticsearch7:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+      environment:
+          - node.name=elasticsearch7
+          - cluster.name=es-docker-cluster
+          - cluster.initial_master_nodes=elasticsearch7
+          - bootstrap.memory_lock=false
+          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      ulimits:
+        nofile:
+            soft: 65535
+            hard: 65535
+        memlock:
+            soft: -1
+            hard: -1
+      volumes:
+          - ./elasticsearch/7:/usr/share/elasticsearch/data
+      ports:
+          - "9200:9200"
