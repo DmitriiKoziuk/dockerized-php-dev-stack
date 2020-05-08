@@ -9,7 +9,7 @@ services:
         volumes:
             - ./hosts:/etc/nginx/conf.d
             - ./www:/var/www
-            - ./logs:/var/log/nginx
+            - ./services/nginx/logs:/var/log/nginx
         links:
             - php73dev
             - php73prod
@@ -24,10 +24,10 @@ services:
             usergroupid: 1000
         links:
             - mysql8
+            - elasticsearch7
         volumes:
             - ./www:/var/www
-            - /usr/local/etc/php/conf.d
-            - ./php/php73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./services/php/73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     php74dev:
         build:
@@ -38,10 +38,10 @@ services:
             usergroupid: 1000
         links:
             - mysql8
+            - elasticsearch7
         volumes:
             - ./www:/var/www
-            - /usr/local/etc/php/conf.d
-            - ./php/php74dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./services/php/74dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     php73prod:
         build:
@@ -52,10 +52,10 @@ services:
             usergroupid: 1000
         links:
             - mysql8
+            - elasticsearch7
         volumes:
             - ./www:/var/www
-            - /usr/local/etc/php/conf.d
-            - ./php/php73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./services/php/73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     php74prod:
         build:
@@ -66,17 +66,35 @@ services:
             usergroupid: 1000
         links:
             - mysql8
+            - elasticsearch7
         volumes:
             - ./www:/var/www
-            - /usr/local/etc/php/conf.d
-            - ./php/php74prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./services/php/74prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     mysql8:
         image: mysql:8
         ports:
             - "3306:3306"
         volumes:
-            - ./mysql/8/db:/var/lib/mysql
-            - /usr/local/bin
+            - ./services/mysql/8/data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: secret
+    elasticsearch7:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+      environment:
+          - node.name=elasticsearch7
+          - cluster.name=es-docker-cluster
+          - cluster.initial_master_nodes=elasticsearch7
+          - bootstrap.memory_lock=false
+          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      ulimits:
+        nofile:
+            soft: 65535
+            hard: 65535
+        memlock:
+            soft: -1
+            hard: -1
+      volumes:
+          - ./services/elasticsearch/7/data:/usr/share/elasticsearch/data
+      ports:
+          - "9200:9200"
