@@ -11,10 +11,26 @@ services:
             - ./www:/var/www
             - ./services/nginx/logs:/var/log/nginx
         links:
-            - php73dev
             - php73prod
-            - php74dev
+            - php73dev
             - php74prod
+            - php74dev
+            - php80prod
+            - php80dev
+    php73prod:
+        build:
+          context: ./images/php73prod
+          args:
+            username: php
+            userid: 1000
+            usergroupid: 1000
+        links:
+            - mysql8
+            - elasticsearch7
+        volumes:
+            - ./www:/var/www
+            - ./services/php/73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./shared/tmp/xhprof:/tmp/xhprof
     php73dev:
         build:
           context: ./images/php73dev
@@ -28,6 +44,20 @@ services:
         volumes:
             - ./www:/var/www
             - ./services/php/73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./shared/tmp/xhprof:/tmp/xhprof
+    php74prod:
+        build:
+          context: ./images/php74prod
+          args:
+            username: php
+            userid: 1000
+            usergroupid: 1000
+        links:
+            - mysql8
+            - elasticsearch7
+        volumes:
+            - ./www:/var/www
+            - ./services/php/74prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     php74dev:
         build:
@@ -43,9 +73,9 @@ services:
             - ./www:/var/www
             - ./services/php/74dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
-    php73prod:
+    php80prod:
         build:
-          context: ./images/php73prod
+          context: ./images/php80prod
           args:
             username: php
             userid: 1000
@@ -55,11 +85,11 @@ services:
             - elasticsearch7
         volumes:
             - ./www:/var/www
-            - ./services/php/73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./services/php/80prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
-    php74prod:
+    php80dev:
         build:
-          context: ./images/php74prod
+          context: ./images/php80dev
           args:
             username: php
             userid: 1000
@@ -69,7 +99,7 @@ services:
             - elasticsearch7
         volumes:
             - ./www:/var/www
-            - ./services/php/74prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./services/php/80dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     mysql8:
         image: mysql:8
