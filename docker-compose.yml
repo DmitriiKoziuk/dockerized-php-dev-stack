@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
     nginx:
@@ -27,6 +27,7 @@ services:
         links:
             - mysql8
             - elasticsearch7
+            - redis
         volumes:
             - ./www:/var/www
             - ./services/php/73prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -38,9 +39,13 @@ services:
             username: php
             userid: 1000
             usergroupid: 1000
+        environment:
+            XDEBUG_CONFIG: "remote_host=172.17.0.1 remote_connect_back=0 remote_enable=1 remote_log=/var/www/hello/xdebug.log"
+            PHP_IDE_CONFIG: "serverName=php"
         links:
             - mysql8
             - elasticsearch7
+            - redis
         volumes:
             - ./www:/var/www
             - ./services/php/73dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -55,6 +60,7 @@ services:
         links:
             - mysql8
             - elasticsearch7
+            - redis
         volumes:
             - ./www:/var/www
             - ./services/php/74prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -66,9 +72,15 @@ services:
             username: php
             userid: 1000
             usergroupid: 1000
+        environment:
+            XDEBUG_CONFIG: "remote_host=172.17.0.1 remote_connect_back=0 remote_enable=1 remote_log=/var/www/hello/xdebug.log"
+            PHP_IDE_CONFIG: "serverName=php"
         links:
             - mysql8
             - elasticsearch7
+            - redis
+        ports:
+            - "7480:7480"
         volumes:
             - ./www:/var/www
             - ./services/php/74dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -83,6 +95,7 @@ services:
         links:
             - mysql8
             - elasticsearch7
+            - redis
         volumes:
             - ./www:/var/www
             - ./services/php/80prod/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -94,21 +107,33 @@ services:
             username: php
             userid: 1000
             usergroupid: 1000
+        environment:
+            XDEBUG_MODE: 'debug'
+            XDEBUG_CONFIG: "client_host=172.17.0.1 log=/var/www/hello/xdebug.log"
+            PHP_IDE_CONFIG: "serverName=php"
         links:
             - mysql8
             - elasticsearch7
+            - redis
         volumes:
             - ./www:/var/www
             - ./services/php/80dev/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
             - ./shared/tmp/xhprof:/tmp/xhprof
     mysql8:
         image: mysql:8
+        command: --innodb_buffer_pool_size=2G --internal_tmp_mem_storage_engine=MEMORY
         ports:
             - "3306:3306"
         volumes:
             - ./services/mysql/8/data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: secret
+    postgres13:
+        image: postgres:13.4
+        environment:
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - ./services/postgresql/13/data:/var/lib/postgresql/data
     elasticsearch7:
       image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
       environment:
@@ -128,3 +153,7 @@ services:
           - ./services/elasticsearch/7/data:/usr/share/elasticsearch/data
       ports:
           - "9200:9200"
+    redis:
+      image: redis:latest
+      ports:
+        - "127.0.0.1:6379:6379"
